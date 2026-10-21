@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <!-- Temporary placeholder until spec/assets/kitten.png is supplied -->
+  <circle cx="100" cy="100" r="96" fill="#FBD6DC" stroke="#F7AEB8" stroke-width="6" stroke-dasharray="14 10"/>
+  <path d="M58 82 L66 42 L92 66 Q100 64 108 66 L134 42 L142 82 Q150 98 146 116 Q138 150 100 152 Q62 150 54 116 Q50 98 58 82 Z" fill="#F7AEB8"/>
+  <circle cx="82" cy="102" r="7" fill="#2E2424"/>
+  <circle cx="118" cy="102" r="7" fill="#2E2424"/>
+  <path d="M94 118 L106 118 L100 125 Z" fill="#C93A6B"/>
+  <path d="M100 125 Q92 134 84 128 M100 125 Q108 134 116 128" fill="none" stroke="#2E2424" stroke-width="3" stroke-linecap="round"/>
+</svg>

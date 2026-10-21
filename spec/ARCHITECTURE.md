@@ -265,3 +265,8 @@ Vercel (אותו Origin)
 **הקשר:** גופנים מ-Google Fonts אינם זמינים Offline, ומחייבים גם התאמה של כללי ה-CSP.
 **החלטה:** Heebo ו-Assistant נכללים באמצעות חבילות `@fontsource` ונכנסים ל-Precache.
 **השלכות:** המראה זהה גם Offline. גודל ההורדה הראשונה גדל מעט, ולכן נכללים רק המשקלים שבשימוש.
+
+### ADR-5: הפריסה הראשונה של Milestone 1 ל-Production לפני הדחיפה
+**הקשר:** ב-Vercel, הפריסה הראשונה של פרויקט חדש הופכת תמיד ל-Production ומקבלת את הכתובת הציבורית — גם ב-`vercel deploy` רגיל וגם עם `--target preview`. לכן ב-Milestone 1 לא ניתן ליצור Preview לפני שקיימת פריסת Production (שתי פריסות כאלה נמחקו).
+**החלטה:** בעל המוצר אישר במפורש פריסה ידנית ל-Production (`vercel deploy --prod`) כבר ב-Milestone 1, כדי לבדוק את המסך בטלפון לפני הדחיפה. מכאן והלאה, Preview נוצר עם `vercel deploy --target preview`, ויש לוודא אחרי כל פריסה שה-target שלה הוא preview.
+**השלכות:** מסך Milestone 1 ציבורי עוד לפני האישור — חריגה חד-פעמית מ-ADR-1. מ-Milestone 2 ואילך תהליך ה-Preview שב-ADR-2 עובד כמתוכנן.

@@ -57,5 +57,6 @@
 
 ## פקודות הרצה
 > Claude ממלא זאת ברגע שהאפליקציה יכולה לרוץ (בדרך כלל בסיום Milestone 1), ומעדכן אם משהו משתנה.
-- **הרצה (dev):** `<command>`
-- **בדיקות (test):** `<command, או "אין">`
+- **הרצה (dev):** `npm run dev` (שרת Vite מקומי, http://localhost:5173). ב-Milestone 2, כשיתווסף ה-API, יעודכן ל-`npx vercel dev`.
+- **בדיקות (test):** אין (Vitest נוסף ב-Milestone 2).
+- **בדיקת טקסט ארוך בפיתוח בלבד:** `http://localhost:5173/?sample=he` או `?sample=en`.
