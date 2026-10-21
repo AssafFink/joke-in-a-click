@@ -270,3 +270,8 @@ Vercel (אותו Origin)
 **הקשר:** ב-Vercel, הפריסה הראשונה של פרויקט חדש הופכת תמיד ל-Production ומקבלת את הכתובת הציבורית — גם ב-`vercel deploy` רגיל וגם עם `--target preview`. לכן ב-Milestone 1 לא ניתן ליצור Preview לפני שקיימת פריסת Production (שתי פריסות כאלה נמחקו).
 **החלטה:** בעל המוצר אישר במפורש פריסה ידנית ל-Production (`vercel deploy --prod`) כבר ב-Milestone 1, כדי לבדוק את המסך בטלפון לפני הדחיפה. מכאן והלאה, Preview נוצר עם `vercel deploy --target preview`, ויש לוודא אחרי כל פריסה שה-target שלה הוא preview.
 **השלכות:** מסך Milestone 1 ציבורי עוד לפני האישור — חריגה חד-פעמית מ-ADR-1. מ-Milestone 2 ואילך תהליך ה-Preview שב-ADR-2 עובד כמתוכנן.
+
+### ADR-6: מבנה ה-Function — לוגיקה נפרדת עם פונקציית יצירה מוזרקת
+**הקשר:** נדרשות בדיקות Vitest לאימות הקלט של `/api/joke`, בלי לפנות ל-OpenAI (עלות, מפתח, זמן).
+**החלטה:** `api/joke.ts` הוא קובץ חיבור דק בחתימת Web (`export default { fetch }`). האימות וקודי התשובה ב-`server/jokeApi.ts` (`handleJokeRequest(request, generate)`), והקריאה ל-OpenAI ב-`server/generateJoke.ts`. בבדיקות מועברת פונקציית יצירה מזויפת. ה-SDK מוגדר עם `maxRetries: 0`, כדי שלא יהיו חיובים כפולים וחריגה מה-Timeout. ייבוא יחסי בצד השרת נכתב עם סיומת `.js` (הפרויקט ESM).
+**השלכות:** בדיקות מהירות וחינמיות. תיקיית `server/` אינה Endpoint (רק קבצים תחת `api/` הם Functions). זמני תגובה שנמדדו ב-`vercel dev`: כ-5–8 שניות לבדיחה, ברמת חשיבה `minimal`.

@@ -57,6 +57,6 @@
 
 ## פקודות הרצה
 > Claude ממלא זאת ברגע שהאפליקציה יכולה לרוץ (בדרך כלל בסיום Milestone 1), ומעדכן אם משהו משתנה.
-- **הרצה (dev):** `npm run dev` (שרת Vite מקומי, http://localhost:5173). ב-Milestone 2, כשיתווסף ה-API, יעודכן ל-`npx vercel dev`.
-- **בדיקות (test):** אין (Vitest נוסף ב-Milestone 2).
-- **בדיקת טקסט ארוך בפיתוח בלבד:** `http://localhost:5173/?sample=he` או `?sample=en`.
+- **הרצה (dev):** `npx vercel dev --listen 3000` (ממשק + API, http://localhost:3000; המפתח נקרא מ-`.env`). `npm run dev` מריץ את הממשק בלבד, בלי API.
+- **בדיקות (test):** `npm test` (Vitest, אימות קלט של `/api/joke`, ללא פנייה ל-OpenAI).
+- **בדיקת טקסט ארוך בפיתוח בלבד:** `http://localhost:3000/?sample=he` או `?sample=en`.

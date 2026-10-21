@@ -3,16 +3,26 @@ import { Heart, Smiley } from './Decorations';
 
 type Props = {
   joke: string | null;
+  loading: boolean;
 };
 
-export function JokeCard({ joke }: Props) {
+export function JokeCard({ joke, loading }: Props) {
   return (
     <section className="joke" aria-labelledby="joke-heading">
       <h2 id="joke-heading" className="section-title">
         {strings.jokeHeading}
       </h2>
       <div className="joke__card" aria-live="polite">
-        {joke === null ? (
+        {loading ? (
+          <div className="joke__loading">
+            <p>{strings.cardLoading}</p>
+            <div className="joke__dots" aria-hidden="true">
+              <span />
+              <span />
+              <span />
+            </div>
+          </div>
+        ) : joke === null ? (
           <div className="joke__empty">
             <Heart className="card-heart card-heart--1" />
             <Heart className="card-heart card-heart--2" />
