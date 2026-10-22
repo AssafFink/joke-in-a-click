@@ -5,9 +5,9 @@ import { JokeCard } from './components/JokeCard';
 import { Burst, Sparkles } from './components/Decorations';
 import { strings } from './strings';
 import { getDevSample } from './devSamples';
-import { requestJoke } from './api';
+import { NetworkError, requestJoke } from './api';
 
-type Status = 'idle' | 'loading' | 'success' | 'error';
+type Status = 'idle' | 'loading' | 'success' | 'error' | 'offline';
 
 // In local development only, ?sample=he|en fills the card with long test text.
 function initialJoke(): string | null {
@@ -27,14 +27,19 @@ export function App() {
 
   async function handleClick() {
     if (inFlight.current) return;
+    // Offline: no request is sent and the card keeps its current content.
+    if (!navigator.onLine) {
+      setStatus('offline');
+      return;
+    }
     inFlight.current = true;
     setStatus('loading');
     try {
       setJoke(await requestJoke(topic));
       setStatus('success');
-    } catch {
+    } catch (err) {
       // The previous joke (or the empty state) stays in the card.
-      setStatus('error');
+      setStatus(err instanceof NetworkError && !navigator.onLine ? 'offline' : 'error');
     } finally {
       inFlight.current = false;
     }
@@ -55,7 +60,7 @@ export function App() {
           <Burst className="burst burst--mirror" />
         </div>
         <p className="message" role="status" aria-live="polite">
-          {status === 'error' ? strings.error : ''}
+          {status === 'error' ? strings.error : status === 'offline' ? strings.offline : ''}
         </p>
 
         <JokeCard joke={joke} loading={loading} />

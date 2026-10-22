@@ -59,4 +59,6 @@
 > Claude ממלא זאת ברגע שהאפליקציה יכולה לרוץ (בדרך כלל בסיום Milestone 1), ומעדכן אם משהו משתנה.
 - **הרצה (dev):** `npx vercel dev --listen 3000` (ממשק + API, http://localhost:3000; המפתח נקרא מ-`.env`). `npm run dev` מריץ את הממשק בלבד, בלי API.
 - **בדיקות (test):** `npm test` (Vitest, אימות קלט של `/api/joke`, ללא פנייה ל-OpenAI).
+- **בדיקת PWA / Offline מקומית:** `npm run build` ואז `npx vite preview` (http://localhost:4173; ה-Service Worker לא פועל ב-dev).
+- **הפקת אייקונים מחדש:** `npm run icons` (לפי `pwa-assets.config.ts`).
 - **בדיקת טקסט ארוך בפיתוח בלבד:** `http://localhost:3000/?sample=he` או `?sample=en`.
