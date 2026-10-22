@@ -2,12 +2,12 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 
-// Everything is same-origin; data: only for the inlined kitten image (ADR-8).
+// Everything is same-origin (ADR-8).
 const CSP = [
   "default-src 'self'",
   "script-src 'self'",
   "style-src 'self'",
-  "img-src 'self' data:",
+  "img-src 'self'",
   "font-src 'self'",
   "connect-src 'self'",
   "manifest-src 'self'",
@@ -51,8 +51,8 @@ export default defineConfig({
       },
       workbox: {
         // App shell only: woff2 fonts (Chrome never needs the woff fallbacks), no runtime caching.
-        globPatterns: ['**/*.{html,js,css,svg,png,ico,woff2}'],
-        globIgnores: ['app-icon-placeholder.svg'],
+        globPatterns: ['**/*.{html,js,css,svg,png,webp,ico,woff2}'],
+        globIgnores: ['app-icon.png'],
         navigateFallback: '/index.html',
         navigateFallbackDenylist: [/^\/api\//],
         cleanupOutdatedCaches: true,

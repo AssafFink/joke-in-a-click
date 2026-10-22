@@ -1,5 +1,4 @@
-// TODO: replace with '../assets/kitten.png' once spec/assets/kitten.png is supplied.
-import kitten from '../assets/kitten-placeholder.svg';
+import kitten from '../assets/kitten.webp';
 import { strings } from '../strings';
 import { Burst, Heart } from './Decorations';
 
