@@ -189,7 +189,7 @@ Vercel (אותו Origin)
 - **Development מקומי:** `vercel dev` — מריץ יחד את ה-Frontend (Vite) ואת ה-Function `api/joke.ts`, ומוודא שהסביבה המקומית זהה ל-Vercel. דורש חשבון Vercel ופרויקט מקושר, ולכן החשבון נפתח כבר ב-Milestone 1 (ראו ADR-1). המפתח נקרא מ-`.env` המקומי. אין צורך ב-Docker או במסד נתונים.
 - **Preview לבדיקות בטלפון:** כשנדרשת בדיקה בטלפון אמיתי לפני אישור Milestone (למשל PWA ו-Offline), Claude יוצר Preview Deployment באמצעות `vercel deploy` (בלי `--prod`) — **רק אחרי שביקש וקיבל את אישור בעל המוצר**. זה יוצר כתובת HTTPS זמנית בלי לגעת ב-Production ובלי push. כברירת מחדל Vercel מגן על כתובות Preview בהתחברות לחשבון Vercel; בעל המוצר מתחבר בטלפון לחשבון שלו כדי לפתוח אותן (ראו ADR-2).
 - **Production:** נפרס אוטומטית מ-`main`.
-- **מפתחות OpenAI:** שניים בלבד — מפתח **פיתוח** (בקובץ `.env` המקומי ובסביבת Preview ב-Vercel) ומפתח **Production** (בסביבת Production ב-Vercel). שני המפתחות שייכים לאותו פרויקט OpenAI, שעליו מוגדרת תקרת ההוצאה.
+- **מפתח OpenAI:** מפתח **אחד** משמש לפיתוח ול-Production — בקובץ `.env` המקומי ובסביבות Preview ו-Production ב-Vercel (ADR-9). המפתח שייך לפרויקט OpenAI שעליו מוגדרת תקרת ההוצאה.
 
 ### 3.2 Build ופריסה אוטומטית
 
@@ -204,7 +204,7 @@ Vercel (אותו Origin)
 
 | משתנה | היכן נדרש | סוד? | הערה |
 |---|---|---|---|
-| `OPENAI_API_KEY` | Backend: `.env` מקומי + Vercel Preview (מפתח פיתוח); Vercel Production (מפתח Production) | כן | לעולם לא לחשוף ל-Frontend; שם המשתנה מופיע ב-`.env.example` ללא ערך |
+| `OPENAI_API_KEY` | Backend: `.env` מקומי + Vercel Preview + Vercel Production (אותו מפתח, ADR-9) | כן | לעולם לא לחשוף ל-Frontend; שם המשתנה מופיע ב-`.env.example` ללא ערך |
 
 `gpt-5` מוגדר כקבוע בקוד Backend לפי דרישת המוצר. אם בוחרים לאחסן את שם המודל ב-Environment Variable מטעמי תחזוקה, ערך Production חייב להיות `gpt-5` ואין לשנותו ללא שינוי מאושר ב-PRD.
 
@@ -285,3 +285,8 @@ Vercel (אותו Origin)
 **הקשר:** ARCHITECTURE 2.8 דורש `nosniff`, `Referrer-Policy` ו-CSP שמתאימה ל-Build ואינה חוסמת את ה-Service Worker. כשה-CSP הוגדרה ככותרת ב-`vercel.json`, היא חלה גם על `vercel dev`. שם Vite משתמש בסקריפטים ובסגנונות מוטמעים, ולכן המסך המקומי נשבר. `vercel dev` גם מתעלם מתנאי `missing` לפי Host, כך שאי אפשר להחריג בעזרתו את `localhost`.
 **החלטה:** `vercel.json` מוסיף לכל הנתיבים `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin` ו-`X-Frame-Options: DENY`. ה-CSP מוזרקת כתגית `<meta http-equiv="Content-Security-Policy">` ל-`index.html` רק ב-`vite build` (Plugin קטן `csp-meta` ב-`vite.config.ts`): `default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'`. `data:` נדרש לתמונת החתלתול המוטמעת. `frame-ancestors` אינו נתמך בתגית `meta`, ולכן `X-Frame-Options` מחליף אותו.
 **השלכות:** הפיתוח המקומי (`vercel dev`, `npm run dev`) עובד בלי CSP. ה-Build נבדק מקומית עם ה-CSP (`npx vite preview`), כולל ה-Service Worker ופתיחה Offline. כל משאב חיצוני עתידי (גופן, תמונה, סקריפט או API בדומיין אחר) ידרוש עדכון של `CSP` ב-`vite.config.ts`.
+
+### ADR-9: מפתח OpenAI אחד לפיתוח ול-Production
+**הקשר:** התוכנית המקורית (3.1) הגדירה שני מפתחות: מפתח פיתוח ל-`.env` ול-Preview, ומפתח נפרד ל-Production. בפועל, ב-Milestone 4 הוגדר ב-Vercel משתנה אחד לסביבות Production ו-Preview.
+**החלטה:** בעל המוצר בחר במפתח אחד לכל הסביבות: `.env` המקומי, Preview ו-Production. תקרת ההוצאה החודשית וההתראות בפרויקט OpenAI נבדקו ואושרו על ידי בעל המוצר (Milestone 4).
+**השלכות:** הניהול פשוט יותר. מצד שני, השימוש בפיתוח ובבדיקות נספר באותה תקרה של Production. אם המפתח דולף, צריך להחליף אותו בכל הסביבות יחד. אין אפשרות לבטל את מפתח הפיתוח בלבד.
